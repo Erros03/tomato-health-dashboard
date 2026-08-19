@@ -10,7 +10,7 @@ import { firebaseConfig, FIREBASE_ENABLED } from "./firebaseConfig.js";
  */
 export function getFirebaseApp(): FirebaseApp | null {
   if (!FIREBASE_ENABLED) return null;
-  return getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  return getApps()[0] ?? initializeApp(firebaseConfig);
 }
 
 export { FIREBASE_ENABLED };
