@@ -3,6 +3,8 @@ import { FIREBASE_ENABLED } from "./firebase";
 
 export type Classification = "Healthy" | "Early Blight" | "Late Blight";
 export type HardwareState = "online" | "offline" | "standby";
+export type SizeGrade = "Small" | "Medium" | "Large";
+export type Ripeness = "Ripe" | "Unripe";
 
 export interface DetectionEvent {
   id: number;
@@ -10,6 +12,9 @@ export interface DetectionEvent {
   confidence: number;
   action: "Accepted" | "Rejected";
   time: string;
+  size: SizeGrade;
+  diameterMm: number;
+  ripeness: Ripeness;
 }
 
 export interface HardwareComponent {
@@ -36,12 +41,17 @@ function stamp(d: Date) {
 
 function makeEvent(id: number): DetectionEvent {
   const label = LABELS[Math.floor(Math.random() * LABELS.length)]!;
+  const diameterMm = Math.round(38 + Math.random() * 45);
+  const size: SizeGrade = diameterMm < 52 ? "Small" : diameterMm < 68 ? "Medium" : "Large";
   return {
     id,
     label,
     confidence: Math.round((0.82 + Math.random() * 0.17) * 100),
     action: label === "Healthy" ? "Accepted" : "Rejected",
     time: stamp(new Date()),
+    size,
+    diameterMm,
+    ripeness: Math.random() > 0.28 ? "Ripe" : "Unripe",
   };
 }
 
@@ -102,6 +112,19 @@ export function useBlightStream() {
     ? Math.round(events.reduce((s, e) => s + e.confidence, 0) / total)
     : 0;
 
+  const countBy = <T extends string>(key: (e: DetectionEvent) => T, value: T) =>
+    events.filter((e) => key(e) === value).length;
+  const pct = (n: number) => (total ? Math.round((n / total) * 100) : 0);
+
+  const small = countBy((e) => e.size, "Small");
+  const medium = countBy((e) => e.size, "Medium");
+  const large = countBy((e) => e.size, "Large");
+  const ripe = countBy((e) => e.ripeness, "Ripe");
+  const unripe = countBy((e) => e.ripeness, "Unripe");
+  const avgDiameter = total
+    ? Math.round(events.reduce((s, e) => s + e.diameterMm, 0) / total)
+    : 0;
+
   return {
     events,
     hardware,
@@ -110,9 +133,24 @@ export function useBlightStream() {
       total,
       healthy,
       blighted,
-      healthyPct: total ? Math.round((healthy / total) * 100) : 0,
-      blightPct: total ? Math.round((blighted / total) * 100) : 0,
+      healthyPct: pct(healthy),
+      blightPct: pct(blighted),
       avgConfidence,
+      size: {
+        small,
+        medium,
+        large,
+        smallPct: pct(small),
+        mediumPct: pct(medium),
+        largePct: pct(large),
+        avgDiameter,
+      },
+      ripeness: {
+        ripe,
+        unripe,
+        ripePct: pct(ripe),
+        unripePct: pct(unripe),
+      },
     },
   };
 }
