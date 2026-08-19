@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "ionic:serve": "vite dev",
+    "ionic:build": "vite build",
+    "serve": "vite dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
