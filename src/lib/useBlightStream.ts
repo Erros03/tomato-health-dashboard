@@ -112,6 +112,19 @@ export function useBlightStream() {
     ? Math.round(events.reduce((s, e) => s + e.confidence, 0) / total)
     : 0;
 
+  const countBy = <T extends string>(key: (e: DetectionEvent) => T, value: T) =>
+    events.filter((e) => key(e) === value).length;
+  const pct = (n: number) => (total ? Math.round((n / total) * 100) : 0);
+
+  const small = countBy((e) => e.size, "Small");
+  const medium = countBy((e) => e.size, "Medium");
+  const large = countBy((e) => e.size, "Large");
+  const ripe = countBy((e) => e.ripeness, "Ripe");
+  const unripe = countBy((e) => e.ripeness, "Unripe");
+  const avgDiameter = total
+    ? Math.round(events.reduce((s, e) => s + e.diameterMm, 0) / total)
+    : 0;
+
   return {
     events,
     hardware,
@@ -120,9 +133,24 @@ export function useBlightStream() {
       total,
       healthy,
       blighted,
-      healthyPct: total ? Math.round((healthy / total) * 100) : 0,
-      blightPct: total ? Math.round((blighted / total) * 100) : 0,
+      healthyPct: pct(healthy),
+      blightPct: pct(blighted),
       avgConfidence,
+      size: {
+        small,
+        medium,
+        large,
+        smallPct: pct(small),
+        mediumPct: pct(medium),
+        largePct: pct(large),
+        avgDiameter,
+      },
+      ripeness: {
+        ripe,
+        unripe,
+        ripePct: pct(ripe),
+        unripePct: pct(unripe),
+      },
     },
   };
 }
