@@ -3,6 +3,8 @@ import { FIREBASE_ENABLED } from "./firebase";
 
 export type Classification = "Healthy" | "Early Blight" | "Late Blight";
 export type HardwareState = "online" | "offline" | "standby";
+export type SizeGrade = "Small" | "Medium" | "Large";
+export type Ripeness = "Ripe" | "Unripe";
 
 export interface DetectionEvent {
   id: number;
@@ -10,6 +12,9 @@ export interface DetectionEvent {
   confidence: number;
   action: "Accepted" | "Rejected";
   time: string;
+  size: SizeGrade;
+  diameterMm: number;
+  ripeness: Ripeness;
 }
 
 export interface HardwareComponent {
