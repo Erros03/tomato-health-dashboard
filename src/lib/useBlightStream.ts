@@ -41,12 +41,17 @@ function stamp(d: Date) {
 
 function makeEvent(id: number): DetectionEvent {
   const label = LABELS[Math.floor(Math.random() * LABELS.length)]!;
+  const diameterMm = Math.round(38 + Math.random() * 45);
+  const size: SizeGrade = diameterMm < 52 ? "Small" : diameterMm < 68 ? "Medium" : "Large";
   return {
     id,
     label,
     confidence: Math.round((0.82 + Math.random() * 0.17) * 100),
     action: label === "Healthy" ? "Accepted" : "Rejected",
     time: stamp(new Date()),
+    size,
+    diameterMm,
+    ripeness: Math.random() > 0.28 ? "Ripe" : "Unripe",
   };
 }
 
