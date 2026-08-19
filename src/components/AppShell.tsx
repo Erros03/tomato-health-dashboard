@@ -42,10 +42,9 @@ export function AppShell({ title, children }: { title: string; children: ReactNo
               {NAV.map((item) => (
                 <IonItem
                   key={item.to}
-                  routerLink={undefined}
                   detail={false}
                   button
-                  color={pathname === item.to ? "light" : undefined}
+                  {...(pathname === item.to ? { color: "light" } : {})}
                 >
                   <Link to={item.to} style={{ textDecoration: "none", width: "100%" }}>
                     <IonLabel>
