@@ -6,15 +6,12 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
-  IonCol,
-  IonGrid,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
   IonNote,
   IonProgressBar,
-  IonRow,
 } from "@ionic/react";
 import { AppShell } from "@/components/AppShell";
 import { useBlightStream } from "@/lib/useBlightStream";
